@@ -1,0 +1,13 @@
+
+server:
+  port: 8761 # default Port for the Eureka server
+
+  spring:
+    application:
+      name: Eureka-server
+
+eureka:
+  client:
+    register-with-eureka: false
+    fetch-registry: false
+

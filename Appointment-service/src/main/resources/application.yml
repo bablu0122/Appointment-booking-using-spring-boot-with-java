@@ -1,0 +1,19 @@
+server:
+  port: 8080
+
+spring:
+  application:
+    name: appointment-service
+  datasource:
+    url: jdbc:mysql://localhost:3306/appointment-db
+    username: root
+    password: Sa@14253669
+  jpa:
+    database-platform: org.hibernate.dialect.MySQL5Dialect
+    hibernate:
+      ddl-auto: update
+
+      eureka:
+        client:
+          service-url:
+            defaultZone: http://localhost:8761/eureka/
