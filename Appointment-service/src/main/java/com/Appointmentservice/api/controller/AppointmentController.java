@@ -15,6 +15,7 @@ import java.util.List;
 @RestController
 @RequestMapping("/appointments")
 public class AppointmentController {
+
     private final AppointmentService appointmentService;
     private final RestTemplate restTemplate;
 
@@ -26,7 +27,7 @@ public class AppointmentController {
 
     @GetMapping
     public List<Appointment> getAllAppointments() {
-        System.out.println("GetAllAppointements");
+        System.out.println("GetAllAppointments");
         return appointmentService.getAllAppointments();
     }
 
@@ -42,25 +43,29 @@ public class AppointmentController {
     public ResponseEntity<Appointment> createAppointment(@RequestBody Appointment appointment) {
         Appointment savedAppointment = null;
         try {
+            // Get patient information using RestTemplate
             ResponseEntity<Patient> patientResponse = restTemplate.getForEntity(
-
-                    "http://patient-service/patients" + appointment.getPatientId(),
+                    "http://localhost:9091/patients/" + appointment.getPatientId(),
                     Patient.class);
-            System.out.println("appointment" + appointment);
+
+            // Check if patient information was retrieved successfully
             if (patientResponse.getStatusCode() != HttpStatus.OK || patientResponse.getBody() == null) {
                 return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
             }
             Patient patient = patientResponse.getBody();
 
+            // Get doctor information using RestTemplate
             ResponseEntity<Doctor> doctorResponse = restTemplate.getForEntity(
-                    "http://doctor-service/doctors/" + appointment.getDoctorId(),
+                    "http://localhost:9090/doctors/" + appointment.getDoctorId(),
                     Doctor.class);
 
+            // Check if doctor information was retrieved successfully
             if (doctorResponse.getStatusCode() != HttpStatus.OK || doctorResponse.getBody() == null) {
                 return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
             }
             Doctor doctor = doctorResponse.getBody();
 
+            // Save the appointment
             savedAppointment = appointmentService.saveAppointment(appointment);
 
         } catch (Exception e) {
